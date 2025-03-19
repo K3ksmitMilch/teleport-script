@@ -1,201 +1,45 @@
-# Teleport Script für RAGE:MP
-Dieses Scripts soll stets Streng Geheim bleiben. Daher bitte ich, dieses Script nicht ohne mein Erlaubnis zuteilen. 
-Sonst lest bitte vorher in LICENSE.txt nach, da stehen noch mehr Richtlinen die Bitte eingehalten werden sollen.
+# Schedule I Cheat Menu by Keks
 
-
-
-
-# RAGE:MP Client-Side Event Logger
-
-Ein komplexer clientseitiger Eventlogger für RAGE:MP, der verschiedene Events protokolliert und eine Funktion zum Ausschließen bestimmter callRemote-Events bietet.
+Ein stilvolles ImGui Menü für Unity-Spiele mit modernem Dark-Mode Design.
 
 ## Features
 
-- Protokollierung verschiedener RAGE:MP-Client-Events
-- Protokollierung von callRemote-Events mit Parametern
-- Möglichkeit, bestimmte callRemote-Events von der Protokollierung auszuschließen
-- Konfigurierbare Log-Level (INFO, WARNING, ERROR, DEBUG)
-- Farbige Konsolenausgabe
-- Performance-Tracking für callRemote-Events
-- Chat-Befehle zur Steuerung des Loggers
+- Modernes, schlichtes Dark-Mode Design
+- Animationen beim Öffnen/Schließen des Menüs
+- Abgerundete Ecken für ein modernes Aussehen
+- Tastenkürzel zum Umschalten (EINFG-Taste / INSERT)
+- Als DLL kompiliert für einfache Integration in Unity
 
-## Installation
+## Aufbau des Projekts
 
-1. Kopiere die Datei `eventlogger.js` in dein RAGE:MP-Client-Skriptverzeichnis.
-2. Importiere den Eventlogger in deinem Skript:
+Das Projekt besteht aus:
+- ImGui Integration für DirectX 11
+- Benutzerdefiniertes Theme mit blauem Akzent
+- Animation mit Fade-In/Out Effekt
+- DLL für Unity-Integration
 
-```javascript
-const eventLogger = require('./eventlogger.js');
-```
+## Kompilieren der DLL
 
-## Verwendung
+1. Öffne das Projekt in Visual Studio
+2. Wähle die Konfiguration "Release" und die Plattform "x64"
+3. Baue das Projekt (F7 oder Build -> Build Solution)
+4. Die DLL wird im Ordner "x64/Release" erstellt
 
-### Grundlegende Protokollierung
+## Verwendung der DLL
 
-```javascript
-// Protokolliere eine Nachricht
-eventLogger.log("INFO", "Custom", "Dies ist eine benutzerdefinierte Lognachricht");
+1. Kopiere die erstellte DLL in den Hauptordner deines Unity-Spiels
+2. Verwende einen DLL-Injector, um die DLL in den Unity-Spielprozess zu injizieren
+3. Drücke die EINFG-Taste (INSERT), um das Menü zu öffnen/schließen
 
-// Verschiedene Log-Level
-eventLogger.log("INFO", "System", "Informationsnachricht");
-eventLogger.log("WARNING", "System", "Warnungsnachricht");
-eventLogger.log("ERROR", "System", "Fehlernachricht");
-eventLogger.log("DEBUG", "System", "Debug-Nachricht");
-```
+## Anpassen des Menüs
 
-### Verwaltung der ausgeschlossenen callRemote-Events
-
-```javascript
-// Füge ein Event zur Ausschlussliste hinzu
-eventLogger.excludeCallRemote("player:someEvent");
-
-// Entferne ein Event aus der Ausschlussliste
-eventLogger.includeCallRemote("player:someEvent");
-
-// Hole die Liste der ausgeschlossenen Events
-const excludedEvents = eventLogger.getExcludedCallRemotes();
-console.log(excludedEvents);
-```
-
-### Statistiken
-
-```javascript
-// Zeige Statistiken in der Konsole an
-eventLogger.printStats();
-
-// Hole Statistiken als Objekt
-const stats = eventLogger.getStats();
-console.log(stats);
-```
-
-### Ereignisprotokollierung ein-/ausschalten
-
-```javascript
-// Schalte die Protokollierung für eine bestimmte Kategorie ein/aus
-eventLogger.toggleEventLogging("player", true); // Einschalten
-eventLogger.toggleEventLogging("render", false); // Ausschalten
-
-// Schalte ein bestimmtes Log-Level ein/aus
-eventLogger.toggleLogLevel("DEBUG", true); // Einschalten
-eventLogger.toggleLogLevel("INFO", false); // Ausschalten
-```
-
-### Statistiken zurücksetzen
-
-```javascript
-// Setze alle Statistiken zurück
-eventLogger.clearStats();
-```
-
-## Chat-Befehle
-
-Der Eventlogger registriert die folgenden Chat-Befehle:
-
-- `/logstats` - Zeigt Statistiken in der Konsole an
-- `/logexclude [eventName]` - Fügt ein Event zur Ausschlussliste hinzu
-- `/loginclude [eventName]` - Entfernt ein Event aus der Ausschlussliste
-- `/loglist` - Zeigt die Liste der ausgeschlossenen Events an
-- `/logclear` - Setzt alle Statistiken zurück
-- `/logtoggle [category] [true/false]` - Schaltet die Protokollierung für eine Kategorie ein/aus
-- `/loglevel [level] [true/false]` - Schaltet ein Log-Level ein/aus
-
-## Konfiguration
-
-Die Konfiguration kann in der Datei `eventlogger.js` angepasst werden:
-
-```javascript
-const config = {
-    // Allgemeine Einstellungen
-    enabled: true,
-    logToConsole: true,
-    logToFile: false, // Hinweis: Dateiprotokollierung ist im Client-Kontext möglicherweise eingeschränkt
-    logFilePath: "eventlogger.log",
-    
-    // Log-Level (true = aktiviert, false = deaktiviert)
-    logLevels: {
-        INFO: true,
-        WARNING: true,
-        ERROR: true,
-        DEBUG: false
-    },
-    
-    // Zu protokollierende Events
-    logEvents: {
-        player: true,
-        vehicle: true,
-        streaming: true,
-        render: false, // Standardmäßig deaktiviert, da es sehr spammy sein kann
-        browser: true,
-        gui: true,
-        keys: true,
-        callRemote: true,
-        custom: true
-    },
-    
-    // Performance-Tracking
-    trackPerformance: true,
-    slowEventThreshold: 50, // ms
-    
-    // Liste der callRemote-Events, die von der Protokollierung ausgeschlossen werden sollen
-    excludedCallRemotes: [
-        "player:updatePosition",
-        "player:syncData",
-        "vehicle:updatePosition",
-        "stats:update",
-        "ping:update",
-        // Füge hier weitere Events hinzu
-    ]
-};
-```
-
-## Beispiel: Integration in ein bestehendes Skript
-
-```javascript
-// Importiere den Eventlogger
-const eventLogger = require('./eventlogger.js');
-
-// Füge ein benutzerdefiniertes Event hinzu
-mp.events.add("myCustomEvent", (data) => {
-    // Protokolliere das Event
-    eventLogger.log("INFO", "Custom", `myCustomEvent triggered with data: ${JSON.stringify(data)}`);
-    
-    // Führe die eigentliche Event-Logik aus
-    // ...
-});
-
-// Füge häufig aufgerufene Events zur Ausschlussliste hinzu
-eventLogger.excludeCallRemote("player:frequentUpdate");
-
-// Registriere einen benutzerdefinierten Tastendruck
-mp.keys.bind(0x42, false, () => { // B key
-    eventLogger.log("INFO", "Keys", "B key pressed");
-    // Deine Logik hier...
-});
-```
-
-## Erweiterte Verwendung
-
-### Benutzerdefinierte Events protokollieren
-
-Du kannst den Eventlogger verwenden, um benutzerdefinierte Events zu protokollieren:
-
-```javascript
-// Protokolliere ein benutzerdefiniertes Event
-function onPlayerAction(action) {
-    eventLogger.log("INFO", "PlayerAction", `Player performed action: ${action}`);
-}
-```
-
-### Performance-Überwachung
-
-Der Eventlogger verfolgt automatisch die Performance von callRemote-Events, wenn `trackPerformance: true` gesetzt ist. Du kannst die Performance-Statistiken mit `eventLogger.printStats()` anzeigen lassen.
+Das Menü kann in der Datei "Schedule I Cheat by Keks.cpp" angepasst werden:
+- Design und Farben in der Funktion `KeksMenu::SetupImGuiStyle()`
+- Menüelemente in der Funktion `KeksMenu::Render()`
+- Animationsverhalten in `KeksMenu::ApplyAnimations()`
 
 ## Hinweise
 
-- Die Dateiprotokollierung ist im Client-Kontext von RAGE:MP möglicherweise eingeschränkt. Der Logger verwendet stattdessen `mp.storage`, um Logs zu speichern, falls aktiviert.
-- Das Rendern von Frames (`render`-Event) ist standardmäßig deaktiviert, da es sehr viele Logs erzeugen kann.
-- Für eine bessere Performance sollten häufig auftretende Events zur Ausschlussliste hinzugefügt werden.
-
-## Lizenz
-
-Frei verwendbar für RAGE:MP-Projekte. 
+- Die DLL muss für jede Unity-Version neu kompiliert werden
+- Das Projekt verwendet DirectX 11 Hooks und ist daher nur mit Unity-Spielen kompatibel, die DirectX 11 verwenden
+- Das Menü kann durch Anpassen der `KeksMenu::Render()` Funktion erweitert werden 
